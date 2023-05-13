@@ -1,5 +1,6 @@
 package com.judahben149.flixfixx.screens.movieList
 
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,12 +25,14 @@ fun DiscoverMovieScreen(
     val fetchAllDiscoverMovies =
         movieListViewModel.fetchDiscoverMovieList.collectAsLazyPagingItems()
 
-    val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState())
+    val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(flingAnimationSpec = rememberSplineBasedDecay<Float>(), state = rememberTopAppBarState())
 
     Scaffold(
         topBar = { MovieListTopAppBar(scrollBehaviour) },
         content = { padding ->
-            ListContent(modifier = Modifier.fillMaxSize().padding(padding), items = fetchAllDiscoverMovies)
+            ListContent(modifier = Modifier
+                .fillMaxSize()
+                .padding(padding), items = fetchAllDiscoverMovies)
         }
     )
 }
