@@ -1,4 +1,4 @@
-package com.judahben149.flixfixx
+package com.judahben149.flixfixx.utils
 
 object Constants {
 
