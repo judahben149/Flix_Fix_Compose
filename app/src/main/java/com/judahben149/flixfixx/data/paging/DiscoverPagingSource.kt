@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.judahben149.flixfixx.data.remote.MovieService
-import com.judahben149.flixfixx.data.remote.model.DiscoverMoviesDataDTO
 import com.judahben149.flixfixx.domain.mappers.network.NetworkMappersImpl
 import com.judahben149.flixfixx.domain.model.MovieList
 
@@ -21,7 +20,7 @@ class DiscoverPagingSource(
             val response = movieService.fetchDiscoverMovies(currentPage)
             val endOfPaginationReached = response.body()?.page == response.body()?.total_pages
             val data = response.body()?.data?.map { dto ->
-                NetworkMappersImpl.movieDtoToMovieModel(dto)
+                NetworkMappersImpl.movieListDtoToMovieListModel(dto)
             }
 
             data?.let { movieList ->
