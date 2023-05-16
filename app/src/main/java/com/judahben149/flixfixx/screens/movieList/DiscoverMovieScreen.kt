@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.judahben149.flixfixx.navigation.Screen
 import com.judahben149.flixfixx.screens.common.ListContent
 
 @OptIn(ExperimentalPagingApi::class, ExperimentalMaterial3Api::class)
@@ -25,14 +26,22 @@ fun DiscoverMovieScreen(
     val fetchAllDiscoverMovies =
         movieListViewModel.fetchDiscoverMovieList.collectAsLazyPagingItems()
 
-    val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(flingAnimationSpec = rememberSplineBasedDecay<Float>(), state = rememberTopAppBarState())
+    val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        flingAnimationSpec = rememberSplineBasedDecay<Float>(),
+        state = rememberTopAppBarState()
+    )
 
     Scaffold(
         topBar = { MovieListTopAppBar(scrollBehaviour) },
         content = { padding ->
             ListContent(modifier = Modifier
                 .fillMaxSize()
-                .padding(padding), items = fetchAllDiscoverMovies)
+                .padding(padding), items = fetchAllDiscoverMovies, onItemClick = { id ->
+                    navController.navigate(Screen.MovieDetail.route.replace(
+                        oldValue = "{movieId}",
+                        newValue = "${id}"
+                    ))
+            })
         }
     )
 }
