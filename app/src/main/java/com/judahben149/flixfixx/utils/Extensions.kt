@@ -17,4 +17,20 @@ object Extensions {
             return "none"
         }
     }
+
+    fun Int.toRunTimeString(): String {
+        var hours = 0
+        var minutes = 0
+
+        return if (this >= 60) {
+            hours = this / 60
+            minutes = this % 60
+            "${hours.toString()}h, ${minutes.toString()}m"
+        }
+        else {
+            minutes = this
+            "${minutes.toString()}m"
+        }
+
+    }
 }
