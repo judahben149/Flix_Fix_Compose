@@ -1,12 +1,10 @@
 package com.judahben149.flixfixx.di.module
 
-import android.content.Context
-import com.judahben149.flixfixx.Constants
+import com.judahben149.flixfixx.utils.Constants
 import com.judahben149.flixfixx.data.remote.MovieService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
