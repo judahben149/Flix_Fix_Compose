@@ -2,6 +2,7 @@ package com.judahben149.flixfixx.screens.common
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,15 +26,19 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.judahben149.flixfixx.Constants
+import com.judahben149.flixfixx.utils.Constants
 import com.judahben149.flixfixx.R
 import com.judahben149.flixfixx.domain.model.MovieList
 import com.judahben149.flixfixx.ui.theme.Typography
 import com.judahben149.flixfixx.utils.Extensions.parseFriendlyDate
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.animation.circular.CircularRevealPlugin
+import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.components.rememberImageComponent
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>) {
+fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>, onItemClick: (id: Int) -> Unit) {
 
     Log.d("TAG", "List Content: Inside List Content Screen")
 
@@ -48,7 +53,9 @@ fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>) {
                 movieItem.id
             }
         ) { movieItem ->
-            movieItem?.let { MovieListItem(movieListItem = movieItem) }
+            movieItem?.let {
+                MovieListItem(movieListItem = movieItem, onItemClick)
+            }
         }
 
         when (val state = items.loadState.refresh) {
@@ -67,7 +74,7 @@ fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>) {
             else -> {}
         }
 
-        when(val state = items.loadState.append) {
+        when (val state = items.loadState.append) {
             is LoadState.Loading -> {
                 item {
                     Column(
@@ -87,31 +94,37 @@ fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>) {
 
 @ExperimentalCoilApi
 @Composable
-fun MovieListItem(movieListItem: MovieList) {
+fun MovieListItem(movieListItem: MovieList, onItemClick: (id: Int) -> Unit) {
     val context = LocalContext.current
     val imageUrl = Constants.IMAGE_BASE_URL + movieListItem.posterPath
-
-    val image = rememberImagePainter(data = imageUrl) {
-        crossfade(durationMillis = 250)
-        error(R.drawable.ic_placeholder)
-        placeholder(R.drawable.ic_placeholder)
-    }
 
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
+            .clickable {
+                onItemClick(movieListItem.id)
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            Image(
-                painter = image,
-                contentDescription = "movie poster",
-                modifier = Modifier.size(60.dp, 80.dp)
+            //Poster
+            CoilImage(
+                modifier = Modifier.size(60.dp, 80.dp),
+                imageModel = { imageUrl },
+                imageOptions = ImageOptions(
+                    alignment = Alignment.Center,
+                    colorFilter = null
+                ),
+                component = rememberImageComponent {
+                    +CircularRevealPlugin(
+                        duration = 400
+                    )
+                }
             )
 
             Column(
@@ -149,12 +162,12 @@ fun MovieListItemPreview() {
             overview = "",
             popularity = 0.00,
             posterPath = "",
-            releaseDate = "April 20, 2023",
+            releaseDate = "1999-10-15",
             title = "Guardians of the Galaxy 4",
             hasVideo = false,
             voteAverage = 0.00,
             voteCount = 0
-        )
+        ), onItemClick = {}
     )
 }
 
