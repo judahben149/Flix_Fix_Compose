@@ -1,7 +1,6 @@
 package com.judahben149.flixfixx.screens.common
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,10 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,16 +26,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
-import com.judahben149.flixfixx.utils.Constants
 import com.judahben149.flixfixx.R
 import com.judahben149.flixfixx.domain.model.MovieList
 import com.judahben149.flixfixx.ui.theme.Typography
+import com.judahben149.flixfixx.utils.Constants
 import com.judahben149.flixfixx.utils.Extensions.parseFriendlyDate
 import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.animation.circular.CircularRevealPlugin
+import com.skydoves.landscapist.animation.crossfade.CrossfadePlugin
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 
@@ -40,22 +44,27 @@ import com.skydoves.landscapist.components.rememberImageComponent
 @Composable
 fun ListContent(modifier: Modifier, items: LazyPagingItems<MovieList>, onItemClick: (id: Int) -> Unit) {
 
-    Log.d("TAG", "List Content: Inside List Content Screen")
+    val rememberedScrollPosition = remember { mutableStateOf(0) }
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(all = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        state = rememberLazyListState()
     ) {
         items(
-            items = items,
-            key = { movieItem ->
-                movieItem.id
-            }
-        ) { movieItem ->
-            movieItem?.let {
-                MovieListItem(movieListItem = movieItem, onItemClick)
-            }
+        count = items.itemCount,
+        key = items.itemKey(key = { movieItem ->
+    movieItem.id
+}
+        ),
+        contentType = items.itemContentType(
+            )
+    ) { index ->
+        val item = items[index]
+        item?.let {
+            MovieListItem(movieListItem = item, onItemClick)
+        }
         }
 
         when (val state = items.loadState.refresh) {
@@ -121,10 +130,15 @@ fun MovieListItem(movieListItem: MovieList, onItemClick: (id: Int) -> Unit) {
                     colorFilter = null
                 ),
                 component = rememberImageComponent {
-                    +CircularRevealPlugin(
+                    +CrossfadePlugin(
                         duration = 400
                     )
-                }
+//                    +ShimmerPlugin(
+//                        baseColor = md_theme_light_onSurface,
+//                        highlightColor = Color.Cyan
+//                    )
+                },
+                previewPlaceholder = R.drawable.sample_poster_image
             )
 
             Column(
