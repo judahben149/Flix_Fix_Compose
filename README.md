@@ -1,7 +1,7 @@
 # Flix_Fix_Compose
-This is a rewrite of Flix Fix, a movie-recommendation app, using Jetpack Compose.
+This is a rewrite of Flix Fix, a movie-recommendation app, using Jetpack Compose. It fetches and displays movies using the TMDB REST API.
 
-Work in Progress 🚧
+Work in Progress  🚧
 
 ## Build tools ⚒️
 * Kotlin
