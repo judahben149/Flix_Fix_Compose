@@ -1,5 +1,5 @@
 # Flix_Fix_Compose
-Rewrite of the Flix Fix App using Jetpack Compose.
+This is a rewrite of Flix Fix, a movie-recommendation app, using Jetpack Compose.
 Work in Progress 🚧
 
 ## Build tools ⚒️
